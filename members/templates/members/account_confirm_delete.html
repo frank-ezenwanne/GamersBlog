@@ -1,0 +1,11 @@
+{%extends "post/index.html"%}
+{%block content%}
+	{%load static%}
+<div align = "center" class = "delete-account-div">
+	<h4 class= "delete-confirm-title" >Are you sure you want to delete your account?</h4>
+		<a class = "delete-no-option" href = '{%url "profile" %}'>NO, don't delete</a><br><br>
+	<a class = "delete-yes-option" href = '{%url "confirm-acc-delete"%}'>Yes, delete</a>
+
+</div>
+
+{%endblock content%}

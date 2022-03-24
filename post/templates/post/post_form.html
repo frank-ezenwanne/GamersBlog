@@ -1,0 +1,111 @@
+{%extends "post/index.html"%}
+{%load static%}
+{%block content%}
+	
+
+	{%if form.non_field_errors%}
+		{%for error in form.non_field_errors%}
+			<ul>
+				<li><small style = 'color:red'>{{error}}</small></li>
+			</ul>
+
+		{%endfor%}
+	{%endif%}
+
+	
+		<div class = 'create-form'>
+			<h4 align="center" class = 'createpost-heading'>Start A New Topic</h4>
+			<span class ="create-post-requirement">A Title is Enough To Start.. </span>
+			<form method = 'POST' enctype = 'multipart/form-data'>
+			{%csrf_token%}
+				
+				<div class = 'form-field'>
+					<span class= "asterik-field">*</span>
+					<label class= "post-create-label-first" for = "id_title">Title</label><br>
+					<input id = "" class = 'user-field' type ='text' name ='title' placeholder=' Title of Post' size = '110' maxlength = '100' value ="{%if form.title.value%}{{form.title.value}}{%else%}{%endif%}"><br>
+					{%if form.title.errors%}
+						{%for error in form.title.errors%}
+							<small style = 'color:red'>{{error}}</small>
+						{%endfor%}
+					{%endif%}
+				</div>
+
+
+				<div class = 'form-field'>
+					<label class= "post-create-label" for = "id_game_name">Name of Game</label>
+					<input id = id_game_name class = 'user-field' type ='text' name ='game_name' placeholder=' Name of the game' size = '160' maxlength = '150' value ="{%if form.game_name.value%}{{form.game_name.value}}{%else%}{%endif%}"><br>
+						{%if form.game_name.errors%}
+							{%for error in form.game_name.errors%}
+								<small style = 'color:red'>{{error}}</small>
+							{%endfor%}
+						{%endif%}
+				</div>
+
+				<div class = 'form-field'>
+					<span id = "console-select" class = "{%if form.content.value%}{{form.content.value}}{%else%}{%endif%}"></span>
+					<label class= "post-create-label" for = "id_select-game">Game Console</label>
+					<select id ="id_select-game" class = 'select-game' name ='game_console' size = '5'>
+						<option disabled selected><div class= 'select-game-txt'>Select Console</div></option>
+						<option id ='PS5' value = "PS5"><div class= 'select-game-txt'>PS5</div></option>
+						<option id = 'PS4' value = "PS4"><div class= 'select-game-txt'>PS4</div></option>
+						<option  id = 'PS3' value = "PS3"><div class= 'select-game-txt'>PS3</div></option>
+						<option id = 'PS2' value = "PS2"><div class= 'select-game-txt'>PS2</div></option>
+						<option id = 'PS1' value = "PS1"><div class= 'select-game-txt'>PS1</div></option>
+						<option id = 'PSP' value = "PSP"><div class= 'select-game-txt'>PSP</div></option>
+						<option id = 'PSVITA' value = "PSVITA"><div class= 'select-game-txt'>PSVITA</div></option>
+						<option id = 'PC' value = "PC"><div class= 'select-game-txt'>PS5</div></option>
+						<option id = 'XBOX2' value = "XBOX2"><div class= 'select-game-txt'>XBOX2</div></option>
+						<option id = 'XBOX1'value = "XBOX1"><div class= 'select-game-txt'>XBOX1</div></option>
+						<option id = 'XBOX360' value = "XBOX360"><div class= 'select-game-txt'>XBOX360</div></option>
+						<option id = 'NintendoDS' value = "NintendoDS"><div class= 'select-game-txt'>Nintendo DS</div></option>
+						<option id = 'NintendoWheel' value = "NintendoWheel"><div class= 'select-game-txt'>Nintendo Wheel</div></option>
+						<option id = 'GameBoyAdvance' value = "GameBoyAdvance"><div class= 'select-game-txt'>GameBoyAdvance</div></option>
+						<option id = 'GameBoy' value = "GameBoy"><div class= 'select-game-txt'>GameBoy</div></option>
+						<option id = 'Sega' value = "Sega"><div class= 'select-game-txt'>SEGA</div></option>
+						<option id = 'FamilyCube' value = "FamilyCube"><div class= 'select-game-txt'>Family Cube</div></option>
+					</select>
+					<span id ='select-reset'>clear</span>
+						{%for error in form.game_console.errors%}
+							<small style = 'color:red'>{{error}}</small>
+						{%endfor%}
+					
+				</div>
+
+				<div id="post-create-text" class = 'form-field'>
+					<label class= "post-create-label" for = "id_content">Write Something</label>
+					<textarea id = 'id_content' class = 'content-write' type ='text' name ='content' placeholder=' Write post content' rows = '7' cols = '25'>{%if form.content.value%}{{form.content.value}}{%else%}{%endif%}</textarea><br>
+					{%if form.content.errors%}
+						{%for error in form.content.errors%}
+							<small style = 'color:red'>{{error}}</small>
+						{%endfor%}
+					{%endif%}
+				</div>
+
+				<div id="post-create-image" class = 'form-field'>
+					<label class= "post-create-label" for = "id_postimage">Upload A Game Pic</label>
+					<input id = "id_postimage" class = 'post-image-field' type ='file' accept = 'image/*' name = 'postimage' ><br>
+					{%if form.post_image.errors%}
+						{%for error in form.post_image.errors%}
+							<small style = 'color:red'>{{error}}</small>
+						{%endfor%}
+					{%endif%}
+				</div>
+
+				<button type = "submit" class = 'form-button'>Submit</button><br>
+				
+		    </form>
+		</div>
+		<script>
+			var console_select = document.getElementById("console-select").className
+			if(console_select){
+				document.getElementById(console_select).selected = true
+			}
+			document.getElementById("select-reset").addEventListener("click",reset_select)
+			function reset_select(){
+			document.querySelector("#id_select-game").selectedIndex = -1
+			}
+		</script>
+		
+			
+	
+{%endblock content%}

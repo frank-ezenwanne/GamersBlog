@@ -1,0 +1,68 @@
+{%extends "post/index.html"%}
+{%load static%}
+
+{%block bgimagecss%}
+<style>
+
+	body{
+		background-color:;
+		background:url("{%static 'post/images/gow-dark.jpg'%}");
+		background-repeat: no-repeat;
+		background-position:top;
+	}
+
+
+</style>
+
+{%endblock bgimagecss%}
+
+{%block content%}
+	{%if messages%}
+		{%for message in messages%}
+			<div align="center" id="message">
+				{{message}}
+			</div>
+		{%endfor%}
+	{%endif%}
+	<div class = "login-block">
+		<h3 class = 'login-heading'> LOGIN </h3>
+		{%if form.non_field_errors%}
+			{%for error in form.non_field_errors%}
+				<ul>
+					<li><small class="login-error">{{error}}</small></li>
+				</ul>
+
+			{%endfor%}
+		{%endif%}
+		<form method = 'POST'>
+			{%csrf_token%}
+			<div class = 'form-field'>
+				<input class = 'user-field' type ='text' name ='username' placeholder=' Username'  {%if form.is_bound%} value ="{{form.username.value}}"{%endif%}><br>
+				{%if form.username.errors%}
+					{%for error in form.username.errors%}
+						<small class="login-error" >{{error}}</small>
+					{%endfor%}
+				{%endif%}
+			</div>
+
+			<div class = 'form-field'>
+				<input class = 'pass1-field' type ='password' name ='password' placeholder=' Password'  {%if form.is_bound%} value ="{{form.password.value}}"{%endif%}><br>
+				{%if form.username.errors%}
+					{%for error in form.password.errors%}
+						<small class="login-error">{{error}}</small>
+					{%endfor%}
+				{%endif%}
+			</div>
+
+			<button  type = "submit" class = 'form-button'>Login</button>
+			<div id ="login-bottom-options">
+				<div class="reg-link"> Not yet a member? <a href = "{%url 'register'%}">Join Us</a>
+				</div>
+
+				<div class = "reg-link">
+					<a href = "{%url 'password_reset'%}"> Forgot Password? </a>
+				</div>
+			</div>
+		</form>
+	</div>
+{%endblock content%}

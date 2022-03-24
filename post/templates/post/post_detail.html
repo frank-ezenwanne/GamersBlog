@@ -1,0 +1,490 @@
+ {%extends "post/index.html"%}
+ {%load static%}
+ {%block momentjs%}
+ <script type ="text/javascript"  src="{%static 'post/js/moment-with-locales.min.js'%}"></script>
+ {%endblock momentjs%}
+{%block content%}
+
+<div class ="post-detail-comment-missed">
+<div align = 'center' class = "post-detail-comment">
+	<div class = {{user.username}} id = "diva"></div>
+	<div class = "post-pic-duo">
+		<span class = "pic-class-post-detail">
+			<img class = "side-pic" src = "{{post.author.profile.image.url}}">
+		</span>
+	<div class = "post-detail-pic-duo-wrap-button">
+		<div align = "right" class = "post-top-upper-right">
+			{%if user == post.author%}
+				<a href = "{%url 'post-update' post.author.username post.slug %}" id ="post-top-update">Update</a>
+				<a href = "{%url 'post-delete' post.author.username post.slug %}" id ="post-top-delete">Delete</a>
+			{%endif%}
+		</div>
+		<div align = "center" class = "post-detail-pic-duo-wrap">
+			<div class = 'post-info'>
+				<div class= "post-top-detail">
+						<a id ="post-top-author" href = "{%url 'user-post-list' post.author.username%}">{{post.author}}</a>
+						{%if post.game_console%}
+							<a id = "post-top-console" href = "{%url 'console-post' post.game_console%}">{{post.game_console}}</a>
+						{%endif%}
+						<small class="post-top-date" >{{post.date_posted.isoformat}}</small>
+				</div>
+					<div class = "post-bottom">
+								<span class = 'post-title'>
+									<a class= "post-title-content">{{post.title}}</a>
+								</span>
+								{%if post.game_name%}
+									<span class="post-game-name">
+										|| {{post.game_name}} ||
+									</span>
+								{%endif%}
+					</div>
+				<div class = 'post-content clearfix'>
+					{%if post.postimage %}
+						{%if post.content%}
+						<div class="post-image-div">
+							<img class = "postimage-pic" src = "{{post.postimage.url}}">
+						</div>
+						{%else%}
+						<div class="post-image-div-center">
+							<img class = "postimage-pic" src = "{{post.postimage.url}}">
+						</div>
+						{%endif%}
+
+					{%endif%}
+
+					{%if post.content%}
+					<div id="post-detail-content">
+						{{post.content}}
+					</div>
+					{%endif%}	
+				</div>
+			</div>
+
+		</div>
+	</div>
+	</div>
+	<div align =center class="like-post-section">
+		{%if user in post.likes.all%}
+			<a class = "post-like" style ="background:linear-gradient(to right, #f13a6c, #4B0082)" href = "{%url 'post-like' post.author.username post.slug%}" >Like</a>
+		{%else%}
+			<a class = "post-like" href = "{%url 'post-like' post.author.username post.slug%}" >Like</a>
+		{%endif%}
+		<span class= "post-like-count">{%if post.likes.count == 0 %} {%elif post.likes.count == 1 %} 1
+		{%else%}{{post.likes.count}} {%endif%}</span>
+		{%if not user.is_authenticated%}
+			<h6 id = "first-login-req-msg" class="login-required-msg">You need to be logged in to like a post/comment</h6>
+		{%endif%}
+	</div>
+
+	<div  class = "comment-section">
+		<h3 id = "commentadd-text"> Add a Comment</h3>
+		{%if not user.is_authenticated%}
+			<h6 id = "second-login-req-msg">You need to be logged in to post a comment</h6>
+		{%endif%}
+		<form class = 'comment-form-box' id = 'form' method = 'POST'>
+			{%csrf_token%}
+			<div class = "high-comment"></div>
+
+			<textarea class = 'comment-write' type ='text' id ='comment-box' name ='comment_body' placeholder=' Write a comment' rows = '6' cols = '30'></textarea>
+			<input type = "hidden" id = "hidden_replied" name = "repliedcomid">{{comment_form.repliedcomid.errors}}
+			{%if user.is_authenticated%}
+				<button type = 'submit'  class = 'comment-button'>Submit</button>
+			{%else%}
+				<button type = 'submit' class = 'comment-button' disabled="true">Submit</button>
+			{%endif%}
+		</form>
+		
+		<div class = 'comment-posts'>
+			{%for comment in comments%}
+				{%if comment.repliedcomid%}
+								<div id='replied-com-pic' class = "pic-class-small">
+									<img class = "comment-side-pic" src = "{{comment.commenter.profile.image.url}}">
+								</div>
+								<div id="replied-com-com" class = "comment-body-like-count-div">
+									<div class = "comment-high-complex">
+											<div class = "high-comment-group">
+												{%if comment.repliedcomid.comment_body != '*deleted-comment*'%}
+													<a class = 'retrace {{comment.repliedcomid.id|add:comment.repliedcomid.id}}  ' href = "#{{comment.repliedcomid.id|add:comment.repliedcomid.id}} ">Retrace</a>
+												{%endif%}
+													<br>
+												
+												
+												<div class = 'high-comment-detail'>
+													<div class = "comment-heading">
+														<a href = "{%url 'user-post-list' comment.commenter.username%}" class = "comment-author">{{comment.repliedcomid.commenter}}</a> <span class="comment-date-posted">{{comment.repliedcomid.date_posted}}</span>
+													</div>
+													<div class = 'comment'>
+														<span>{{comment.repliedcomid.comment_body}}</span>
+													</div>
+												</div>
+											</div>
+											<br>
+
+											<!--lower-com-->
+											<div class = "comment-group-higher"  id = {{comment.id|add:comment.id}}>
+												{%if comment.comment_body != '*deleted-comment*'%}
+													<div class ="highlight-button-div">
+														{% if user.username == comment.commenter.username %}
+															<a class = "delete-com-button">Delete</a>
+															<div class = "confirm-del-section">
+																<span class="delete-com-txt">Delete..Are you sure?</span><a class ="confirm-del" href = "{%url 'comment-delete' post.author.username post.slug comment.commenter comment.id%}">Yes</a><a class = "confirm-no-del" >No</a> 
+															</div>
+															<a class = "highlight-button">Reply</a>
+														{%else%}
+															<a  class = "highlight-button">Reply</a>
+														{%endif%}
+													</div>
+												{%endif%}	
+												
+													<!--lower-com-detail-->
+												<div class = 'high-comment-detail-lower'>
+													<div class = "comment-heading">
+														<a href = "{%url 'user-post-list' comment.commenter.username%}" class = "comment-author">{{comment.commenter.username}}</a> <span class="comment-date-posted">{{comment.date_posted}}</span>
+													</div>
+													<div class = 'comment'>
+														<span>{{comment.comment_body}}</span>
+													</div>
+												</div>
+											</div>
+											<!--lower-com-end-->
+											
+
+							       </div>
+							    
+						       <div class = "comment-like-count-div-higher">
+							       {%if comment.comment_body != '*deleted-comment*'%}
+							       		{%if user in comment.likes.all%}
+							      		 <a style ="background:linear-gradient(to right, #f13a6c, #4B0082)"class = "comment-like" href = "{%url 'comment-like' post.author.username post.slug comment.id%}" id = '{%url "comment-like" post.author.username post.slug comment.id %}'>Like</a>
+							      		 {%else%}
+							      		 	 <a class = "comment-like" href = "{%url 'comment-like' post.author.username post.slug comment.id%}" id = '{%url "comment-like" post.author.username post.slug comment.id %}'>Like</a>
+							       		{%endif%}
+
+							      	 <span class ="comment-like-count">{%if comment.likes.count == 0%}{%elif comment.likes.count == 1%} 1 Like{%else%} {{comment.likes.count}} Likes {%endif%}</span>
+							       {%endif%}
+								</div>
+							</div>
+								
+				{%else%}
+										<div id="pic-class-small-simpler" class = "pic-class-small">
+											<img class = "comment-side-pic" src = "{{comment.commenter.profile.image.url}}">
+										</div>
+										<div class = "comment-body-like-count-div ">
+											 <div class = "comment-group"  id = {{comment.id|add:comment.id}}>
+											 	{%if comment.comment_body != '*deleted-comment*'%}
+													<div class ="highlight-button-div-simpler">
+														{% if user.username == comment.commenter.username %}
+															<a class = "delete-com-button">Delete</a>
+															<div class = "confirm-del-section">
+																<span class="delete-com-txt">Delete!..Are you sure?</span><a class ="confirm-del" href = "{%url 'comment-delete' post.author.username post.slug comment.commenter comment.id%}">Yes</a><a class = "confirm-no-del">No</a> 
+															</div>
+															<a  class = "highlight-button">Reply</a>
+														{%else%}
+															<a  class = "highlight-button">Reply</a>
+														{%endif%}
+													</div>
+												{%endif%}
+												
+												<div class = 'comment-detail'>
+													<div class = "comment-heading">
+														<a href = "{%url 'user-post-list' comment.commenter.username%}" class = "comment-author">{{comment.commenter.username}}</a> <span class="comment-date-posted">{{comment.date_posted}}</span>
+													</div>
+													<div class = 'comment'>
+														<span>{{comment.comment_body}}</span>
+													</div>
+												</div>
+											</div>
+
+										<div class = "comment-like-count-div">
+											{%if comment.comment_body != '*deleted-comment*'%}
+												{%if user in comment.likes.all%}
+							      					 <a style ="background:linear-gradient(to right, #f13a6c, #4B0082)"class = "comment-like" href = "{%url 'comment-like' post.author.username post.slug comment.id%}" id = '{%url "comment-like" post.author.username post.slug comment.id %}'>Like</a>
+							      				 {%else%}
+							      		 			 <a class = "comment-like" href = "{%url 'comment-like' post.author.username post.slug comment.id%}" id = '{%url "comment-like" post.author.username post.slug comment.id %}'>Like</a>
+							       				{%endif%}
+												<span class ="comment-like-count">{%if comment.likes.count == 0 %}{%elif comment.likes.count == 1%} 1 Like{%else%} {{comment.likes.count}} Likes {%endif%}
+													</span>
+											{%endif%}
+										</div>
+									</div>
+										
+														
+				{%endif%}												
+			{%endfor%}
+
+		</div>
+		<h3><a id = "commentadd-retrace"> Add a Comment...</a></h3>
+	</div>
+</div>
+ {%if miss_combo%}
+	<div class = "missed-posts">
+		<div align="center" class ="missed-post-heading"> Posts you might have missed...</div>
+		{%for post in miss_combo%}
+				<div class = "post-pic-duo">
+				<div class = "pic-class-post-detail-missed">
+					<img class = "side-pic-missed" src = "{{post.author.profile.image.url}}">
+				</div>
+				<div align = "center" class = "missed-post-pic-duo-wrap">
+					<div class = 'post-info'>
+						<div class= "post-top">
+							<a id ="post-top-author" href ="{%url 'user-post-list' post.author.username%}">{{post.author}}</a>
+							{%if post.game_console%}
+								<a id = "post-top-console" href = "{%url 'console-post' post.game_console%}">{{post.game_console}}</a>
+							{%endif%}
+							<small class="post-top-date" >{{post.date_posted.isoformat}}</small>
+						</div>
+							<div class = "post-bottom">
+							<span class = 'post-title'>
+								<a class= "post-title-content" href ="{%url 'post-detail' post.author.username post.slug%}">{{post.title}}</a>
+							</span>
+							{%if post.game_name%}
+								<span class="post-game-name">
+									|| {{post.game_name}} ||
+								</span>
+							{%endif%}
+						</div>
+					</div>
+				</div>
+			</div>
+		{%endfor%}
+	</div>
+{%endif%}
+
+</div>
+	<script>
+
+		var date_col = document.getElementsByClassName("post-top-date")
+		for (var j=0; j<date_col.length ;j++){
+			var real_date = date_col[j].innerText
+			real_date = moment(real_date)
+			date_col[j].innerText = real_date.format("lll")
+		}
+
+		var get_delete_butt = document.getElementsByClassName("delete-com-button")
+		
+		for(var z = 0; z < get_delete_butt.length; z++){
+			get_delete_butt[z].addEventListener('click',del_com)
+		}
+
+		function del_com(e){
+		e.target.nextElementSibling.style.display = 'inline-block'
+		e.target.style.display = "none"
+		e.target.nextElementSibling.nextElementSibling.style.display = "none"
+		}
+
+		var get_confirm_del = document.getElementsByClassName("confirm-no-del")
+		
+		for(var del = 0 ; del < get_confirm_del.length; del++){
+			get_confirm_del[del].addEventListener('click', return_com)
+		}
+
+		function return_com(e){
+			e.target.parentElement.previousElementSibling.style.display = 'inline-block'
+			e.target.parentElement.style.display = 'none'
+			e.target.parentElement.nextElementSibling.style.display = "inline-block"
+		}
+
+		var get_retrace_button = document.getElementsByClassName('retrace')
+		
+
+		for(var y = 0 ; y<get_retrace_button.length; y++){
+			get_retrace_button[y].addEventListener('click', retrace)
+		}
+		
+		function retrace(e){
+
+			get_current_class = e.target.className.split(' ');
+			var element = document.getElementById(get_current_class[1])
+
+			
+			element.classList.remove("high-anime-class")
+			void element.offsetWidth
+			element.classList.add('high-anime-class')
+			}
+
+		var get_reply_button = document.getElementsByClassName("highlight-button")
+		
+		for(var x=0 ; x<get_reply_button.length;x++){
+			get_reply_button[x].addEventListener('click',highbutt)
+		}
+		
+		function highbutt(event){
+			button = event.target
+			topparent = button.parentElement.parentElement
+			var commenter = topparent.firstElementChild.nextElementSibling.firstElementChild.firstElementChild.innerText
+			console.log(topparent.firstElementChild.nextElementSibling.firstElementChild.firstElementChild.firstChild)
+			var date_posted = topparent.firstElementChild.nextElementSibling.firstElementChild.firstElementChild.nextElementSibling.innerText
+			var comment = topparent.firstElementChild.nextElementSibling.firstElementChild.nextElementSibling.firstElementChild.innerText
+
+			if(comment.length > 200){
+				comment = comment.slice(0,200) + "...."
+			}
+			var commentid = topparent.id
+			
+
+			var highcomdiv = document.getElementsByClassName("high-comment")[0]
+			var comwrite = document.getElementById('comment-box')
+			comwrite.focus({preventScroll:false})
+
+			highcomdiv.innerHTML = '<div class = "comment-group-js" id = '+ commentid +'><button class = "remove-highlight" onClick ="removehighlight()"><span style="color:red">X</span></button><br> <div class = "comment-highlight-detail"> <div class = "comment-heading"> <span>' + commenter + '</span> <span>'+ date_posted + '</span></div><div class = "comment"> <span>'+ comment + '</span></div></div></div>'
+
+		}
+
+
+		function removehighlight(){
+			var get_highlight = document.getElementsByClassName('high-comment')[0]
+			get_highlight.textContent = ''
+		}
+		var form = document.getElementById('form');
+		form.addEventListener('submit', get_high_id)
+
+		function get_high_id(e){
+			e.preventDefault()
+			var highcomdiv = document.getElementsByClassName("high-comment")[0]
+			if (highcomdiv.innerHTML !== ''){
+					var high_id = highcomdiv.firstElementChild.id
+					console.log(high_id)
+					document.getElementById('hidden_replied').value = high_id
+								/*put highlighted commemt id in input box */
+			}
+			console.log(document.getElementById('hidden_replied').value)	
+			form.submit()
+
+		}
+
+		document.querySelector("#commentadd-retrace").addEventListener("click",focusd)
+
+		function focusd(e){
+			document.querySelector('#comment-box').focus()
+			document.querySelector('#comment-box').select()
+			}
+			
+
+
+		document.getElementsByClassName("post-like")[0].addEventListener("click",get_diva)
+		var com_like_targets =document.getElementsByClassName("comment-like")
+		for(var i = 0; i<com_like_targets.length; i++){
+			com_like_targets[i].addEventListener("click",get_diva2)
+		}
+		function get_diva(e){
+			
+			if(document.getElementById("diva").className){
+				e.preventDefault()
+		 $.ajax({
+            	 	type:'GET',
+            	 	url:'{%url "post-like" post.author.username post.slug%}',
+            	 	dataType:'json',
+            	 	success :function(result){
+            	 		var postlikediv = document.getElementsByClassName('post-like-count')[0]
+            	 		if(result.likes_count === 0){
+            	 			postlikediv.innerHTML = ''
+            	 		}
+            	 	
+            	 		else{
+            	 			postlikediv.innerHTML = result.likes_count
+            	 		}
+            	 		if(result.present === "true"){
+	            	 			e.target.style.background = "linear-gradient(to right, #f13a6c, #4B0082)"
+	            	 	}
+	            	 	else{
+	            	 		e.target.style.background = "gray"
+	            	 	}
+            	 	
+            	 	 },
+            	 	error:function(){
+            	 		console.log("Post like action not effected")
+            	 	}})}
+		 			else{return}
+            	 
+		}
+			function get_diva2(e){
+				if(document.getElementById("diva").className){
+				e.preventDefault()
+				var url_link = e.target.id
+			 	$.ajax({
+	            	 	type:'GET',
+	            	 	url:url_link,
+	            	 	dataType:'json',
+	            	 	success :function(result){
+	            	 		var comlikespan = e.target.nextElementSibling
+	            	 		if(result.likes_count === 0){
+	            	 			comlikespan.innerHTML = ''
+	            	 		}
+	            	 		
+	            	 		else{
+	            	 			comlikespan.innerHTML = result.likes_count
+	            	 		}
+	            	 		if(result.present === "true"){
+	            	 			e.target.style.background = "linear-gradient(to right, #f13a6c, #4B0082)"
+	            	 		}
+	            	 		else{
+	            	 		e.target.style.background = "gray"
+	            	 		}
+	            	 	
+	            	 	 },
+	            	 	error:function(){
+	            	 		console.log("Comment like action not effected")
+	            	 	}})}
+			 	else{return}
+	        }	 
+		
+			
+
+		$(function() {
+
+
+    // This function gets cookie with a given name
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    /*
+    The functions below will create a header with csrftoken
+    */
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    function sameOrigin(url) {
+        // test that a given url is a same-origin URL
+        // url could be relative or scheme relative or absolute
+        var host = document.location.host; // host + port
+        var protocol = document.location.protocol;
+        var sr_origin = '//' + host;
+        var origin = protocol + sr_origin;
+        // Allow absolute or scheme relative URLs to same origin
+        return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+            (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+            // or any other URL that isn't scheme relative or absolute i.e relative.
+            !(/^(\/\/|http:|https:).*/.test(url));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+                // Send the token to same-origin, relative URLs only.
+                // Send the token only if the method warrants CSRF protection
+                // Using the CSRFToken value acquired earlier
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
+});
+	
+   	
+	</script>
+{%endblock content%}

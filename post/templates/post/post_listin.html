@@ -1,0 +1,164 @@
+{%extends "post/index.html"%}
+{%load static%}
+ {%block momentjs%}
+ <script type ="text/javascript"  src="{%static 'post/js/moment-with-locales.min.js'%}"></script>{%endblock momentjs%}
+{%block content%}
+	<div class = "post-listin-block">	
+		<form id = "id_searchform" method ="GET">
+			{%csrf_token%}
+			<div id = "jump-div" align ="left">
+				<textarea id ="jump-box"  rows = "1rem" cols ="3rem"  name = "page" placeholder="Page">{{posts.number}}</textarea> 
+				<button type = "submit">Go</button>
+				<span id ="page-range">{%if posts.has_other_pages%}Page 1-{{posts.paginator.num_pages}}{%else%}Page 1{%endif%}</span>
+			</div>
+
+			<div class = "search-div" align = "right">
+				
+				{%if search_select == "posts"%}
+				<ul class = "search-select">
+					<li class = "search-option"><input type = "radio" id = "id_select_posts" name = "search-value" value ="posts" checked>Posts</li>
+					<li class = "search-option"><input type = "radio" id = "id_select_users" name ="search-value" value ="users">Users</li>
+				</ul>
+				
+				
+				{%else%}
+				<ul class = "search-select">
+					<li class = "search-option"><input type = "radio" id = "id_select_posts" name = "search-value" value ="posts">Posts</li>
+					<li class = "search-option"><input type = "radio" id = "id_select_users" name ="search-value" value ="users"  checked>Users</li>
+				</ul>
+				
+				{%endif%}
+				
+					<input type = "hidden" id ="id_selected-search" name ="selectedValue"/>
+					
+					<textarea rows=1rem cols =15rem class = "search-box" name = "query">{{query}}</textarea> 
+					<button class ="search-button" id = "id_search_button" >Go</button>
+				
+			</div>
+		</form>
+
+
+		{%if posts %}
+			<div class = "all-user-posts" align ="center">
+			<div class = "post-list-page-title"><b>Latest posts</b></div>
+			{%for post in posts%}
+			
+				<div class = "post-pic-duo">
+					<div class = "pic-class">
+						<img class = "side-pic" src = "{{post.author.profile.image.url}}">
+					</div>
+					<div class = "post-pic-duo-wrap">
+						<div class = 'post-info'>
+							<div class= "post-top">
+								<a id ="post-top-author" href ="{%url 'user-post-list' post.author.username%}">{{post.author}}</a>
+								{%if post.game_console%}
+									{%if post.game_console != "Select Console"%}
+									<a id = "post-top-console" href = "{%url 'console-post' post.game_console%}">{{post.game_console}}</a>
+								{%endif%}
+								{%endif%}
+								<small class="post-top-date" >
+								{{post.date_posted.isoformat}}
+								</small>
+							</div>
+							<div class = "post-bottom">
+								<span class = 'post-title'>
+									<a class= "post-title-content" href ="{%url 'post-detail' post.author.username post.slug%}">{{post.title}}</a>
+								</span>
+								{%if post.game_name%}
+									<span class="post-game-name">
+										|| {{post.game_name}} ||
+									</span>
+								{%endif%}
+							</div>
+						</div>
+					</div>
+				</div>
+			{%endfor%}
+			{%if posts.has_other_pages%}
+				<div align = "center" class = "paginator-block">
+					{%if posts.number == 1%}
+						<a class ="selected-paginate" href = "?page=1">First</a>
+					{%else%}
+						<a class ="paginate" href = "?page=1">First</a>
+					{%endif%}
+
+					{%for num in posts.paginator.page_range%}
+						{%if posts.number == num%}
+							{%if num == 1 %}
+								
+							{%elif num == posts.paginator.num_pages%}
+							
+							{%else%}
+								<a class ="selected-paginate" href = "?page={{num}}">{{num}}</a>
+							{%endif%}
+
+						{%elif num > posts.number|add:"-6" and num < posts.number|add:"6"%}
+							{%if num == 1 %}
+								
+							{%elif num == posts.paginator.num_pages%}
+								
+							{%else%}
+								<a class ="paginate" href = "?page={{num}}">{{num}}</a>
+							{%endif%}
+						{%endif%}
+					{%endfor%}
+
+					{%if posts.number == posts.paginator.num_pages%}
+						<a class ="selected-paginate" href = "?page={{posts.paginator.num_pages}}">Last</a>	
+					{%else%}
+						<a class ="paginate" href = "?page={{posts.paginator.num_pages}}">Last</a>	
+					{%endif%}	
+				</div>
+			{%endif%}
+		</div>			
+		{%elif users%}
+			<div class ="center-users">
+				<div class = "users-num-title"><b>{{users|length}} found</b></div>
+				{%for each_user in users%}
+					<div class = "search-user-div">
+						<img class ="search-user-img" src = "{{each_user.profile.image.url}}">
+						<span class = "search-user-name">{{each_user.username}}</span>
+					</div>
+				{%endfor%}
+			{%else%}
+					{%if search_select == "users"%}
+						<div align="center" class = "no-posts-users"> NO USER FOUND!</div>
+					{%elif search_select == "posts"%}
+						<div align = "center" class = "no-posts-users">NO POST FOUND!</div>
+					{%endif%}
+			{%endif%}
+		</div>
+	</div>
+	
+	<script>		
+				var date_col = document.getElementsByClassName("post-top-date")
+				for (var j=0; j<date_col.length ;j++){
+					var real_date = date_col[j].innerText
+					real_date = moment(real_date)
+					date_col[j].innerText = real_date.format("LLL")
+				}
+				
+
+				var get_click = document.getElementById("id_search_button")
+				get_click.addEventListener("click",get_search_values) 
+				
+				function get_search_values(e){
+				e.preventDefault()
+				var get_search = document.getElementsByName("search-value")
+				for (var i = 0; i < get_search.length ; i++ ){
+					if (get_search[i].checked){
+						document.getElementById("id_selected-search").value = get_search[i].value
+						break
+					}
+				}
+				console.log(get_search[i].value)
+				document.getElementById("id_searchform").submit()}
+	</script>
+
+		{%endblock content%}
+
+			
+					
+			
+
+

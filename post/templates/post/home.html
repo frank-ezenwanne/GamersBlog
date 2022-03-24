@@ -1,0 +1,41 @@
+{%extends "post/index.html"%}
+{%load static%}
+
+
+{%block content%}
+	
+		<p class= "welcome">Welcome to Gamers Blog, a lively site where gamers from all over the globe can
+		share their experiences in playing different games and also ask questions publicly. We provide  game console options for specificity. There are a ton of marvelous characters in the gaming universe. Gamers also have the opportunity to discuss about these characters. Have fun!</p>
+
+		<section class = "top-games">
+			<h2 class="games-heading"> GALLERY</h2>
+			<div class="game-gallery">
+				
+					<div class = game-img><h1 class = "game-img-txt" style="color:white">GOD OF WAR</h1><img src ="{%static 'post/images/gow.jpeg'%}"></div>
+				
+				
+					<div class = game-img><h1 class = "game-img-txt" style="color:white">devil may cry</h1><img src ="{%static 'post/images/dmc5.jpg'%}"></div>
+				
+				
+					<div class = game-img><h1 class = "game-img-txt"  style="color:white">the witcher</h1><img src ="{%static 'post/images/witcher.jpeg'%}"></div>
+				
+				
+					<div id = "prototype-pic" class = game-img><h1 class = "game-img-txt"  style="color:white">prototype 2</h1><img src ="{%static 'post/images/prototype2.jpeg'%}"></div>
+				
+				
+					<div class = game-img><h1 class = "game-img-txt"  style="color:white">injustice</h1><img src ="{%static 'post/images/injustice.jpg'%}"></div>
+				
+				
+					<div id= "assassin-pic" class = game-img><h1 class = "game-img-txt"  style="color:white">assassin's creed</h1><img src ="{%static 'post/images/ass-creed.jpeg'%}"></div>
+			
+				
+					<div class = game-img><h1 class = "game-img-txt" style="color:white">infamous second son</h1><img src ="{%static 'post/images/infamous.jpeg'%}"></div>
+				
+				
+					<div class = game-img><h1 class = "game-img-txt" style="color:white">watch dogs</h1><img src ="{%static 'post/images/watch-dogs.jpg'%}"></div>
+				
+			</div>
+			
+		</section>
+
+{%endblock content%}

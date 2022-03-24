@@ -1,0 +1,13 @@
+{%extends "post/index.html"%}
+{%load static%}
+{%block content%}
+	
+
+<form id= "post-confirm-del-page" align = "center" method = 'POST'>
+	{%csrf_token%}
+	<h4  id = "confirm-del-heading"> Are you sure you want to delete..<br>
+	<div id = "confirm-del-post">{{post.title}}</div> </h4>
+	<button id ="confirm-del-yes" type = 'submit'>Yes,Delete</button>
+	<a id="post-confirm-cancel" href = "{% url 'post-detail' post.author post.slug %}">Cancel</a>
+</form>
+{%endblock content%}

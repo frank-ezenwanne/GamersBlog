@@ -1,0 +1,73 @@
+{%extends "post/index.html"%}
+{%block content%}
+	{%load static%}
+<div class = "user-profile-div">
+	<div class = "profile-img-div">
+		<img class = "profile-img" src = "{{user.profile.image.url}}">
+	</div>
+	<form method = 'POST' enctype = 'multipart/form-data'>
+		{%csrf_token%}
+		<div class = "form-field">
+			<label class= "profile-label"> Username</label>
+			<input class = "user-field" type = 'text' name = 'username' value ="{{u_form.username.value}}"><br>
+			{%if u_form.username.errors%}
+				{%for error in u_form.username.errors%}
+					<small style = 'color:red'>{{error}}</small>
+				{%endfor%}
+			{%endif%}
+		</div>
+		<div class = "form-field">
+			<label class= "profile-label"> Email</label>
+			<input class = "email-field" type = 'text' name = 'email' value ="{{u_form.email.value}}"><br>
+			{%if u_form.email.errors%}
+				{%for error in u_form.email.errors%}
+					<small style = 'color:red'>{{error}}</small>
+				{%endfor%}
+			{%endif%}
+		</div>
+		<div class = "form-field">
+			<label class= "profile-label"> Profile picture</label>
+			<input id ="profile-image-field" class = "image-field" type = 'file' name = 'image' accept = "image/*"><br>
+				{%if p_form.image.errors%}
+					{%for error in p_form.image.errors%}
+						<small style = 'color:red'>{{error}}</small>
+					{%endfor%}
+				{%endif%}
+
+		</div>
+		<div class = "lower-profile-options">
+			<div class = "left-lower-profile">
+				<button type ="submit">Update</button>
+				
+			</div>
+			<div class = "right-lower-profile">
+				<a class ="delete-account" id = "others-delete">Others</a>
+				<a id="id_delete-account" >Delete My Account</a>
+				<a href ='{%url "delete-my-account"%}' id = "confirm-del-acc">Yes</a>
+				<a id = "confirm-no-del-acc">No</a>
+			</div>
+		</div>
+		<a id = "profile-pass-reset" href = "{%url 'password_reset'%}"> Reset Password</a>
+
+	</form>
+
+</div>
+<script>
+	document.getElementById("others-delete").addEventListener("click",display_delete)
+	function display_delete(){
+		document.getElementById("id_delete-account").style.display = "inline-block"
+		document.getElementById("others-delete").style.display = "none"
+		document.getElementById("confirm-del-acc").style.display = 'inline-block'
+		document.getElementById("confirm-no-del-acc").style.display = 'inline-block'
+	}
+
+	document.getElementById("confirm-no-del-acc").addEventListener("click",delete_account_click)
+	function delete_account_click(){
+		document.getElementById("confirm-del-acc").style.display = 'none'
+		document.getElementById("confirm-no-del-acc").style.display = 'none'
+		document.getElementById("id_delete-account").style.display = "none"
+		document.getElementById("others-delete").style.display = "inline-block"
+	}
+
+</script>
+{%endblock content%}

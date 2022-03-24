@@ -1,0 +1,153 @@
+{%load static%}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="{%static 'post/normalise.css'%}">
+	<link rel="stylesheet" type="text/css" href="{%static 'post/css/style2.css'%}">
+	<script type ="text/javascript"  src="{%static 'post/js/jquery.min.js'%}"></script>
+	
+
+	{%block momentjs%}{%endblock momentjs%}
+	
+	<meta charset="utf-8">
+	<meta name = "description" content = "Ask question, Post thoughts on your favourite games, game characters, Game consoles etc">
+	<meta name = "og:title" property = "og:title" content ="View posts your friends posted on GamersBlog.">
+	<title>Gamers blog - GameTalk|Ask|Discuss</title>
+
+	{%block bgimagecss%}{%endblock bgimagecss%}
+</head>
+<body>
+{%block bgimage%}{%endblock bgimage%}
+
+
+		<nav>
+			
+				<div class = "line-nav">
+					<div class ="line line1"></div>
+					<div class ="line line2"></div>
+					<div class ="line line3"></div>
+				</div>
+			
+
+				<div id="nav-items-section">
+					
+					<div id="nav-main-name">
+						<a class ="nav-bar-gamersblog" href="{%url 'home-page'%}">
+							<span id= "navbar-name1">Gamers</span>
+							<span id= "navbar-name2">Blog</span>
+						</a>
+					</div>
+
+					<div id="nav-bar-others">
+						<a class= "nav-bar-others" href="{%url 'post-list'%}">Latest</a>
+						{%if user.is_authenticated%}
+							<a class= "nav-bar-others" href="{%url 'create-post'%}">Start</a>
+						{%else%}
+							<a class= "nav-bar-others" href="{%url 'login'%}">Sign In</a>
+						{%endif%}
+					</div>
+
+				</div>
+		</nav>
+			
+		
+		{%if user.is_authenticated%}
+			<div class = "side-bar">
+				<div><img class = "side-bar-pic" src = "{{user.profile.image.url}}"></div>
+				<span class = "side-bar-email">{{user.username}}</span>
+				<a class = "lower-side-bar" href ="{%url 'profile' %}">View Your Profile</a>
+				<a class = "lower-side-bar" href ="{%url 'user-post-list' user.username%}">View Your Posts</a>
+				<a class = "lower-side-bar" href ="{%url 'post-user-com' user.username%}">Posts You Commented On</a>
+				<a class = "lower-side-bar" href ="{%url 'logout' %}">Logout</a>
+			</div>
+
+		{%else%}
+			<div class = "side-bar">
+				<a class = "lower-side-bar" href ="{%url 'register' %}">Register</a>
+				<a class = "lower-side-bar" href ="{%url 'login' %}">Login</a>
+			</div>
+		{%endif%}
+		}
+
+			  
+	<main>
+		<div id = "content">
+			{%block content%}{%endblock content%}
+		</div>
+
+		<footer align="center">
+			<div align = "center" class= "footer-link-cont">
+				<div align="center" class = "top-footer">
+					<div align = "center" class="footer-links">
+						{%if user.is_authenticated%}
+							<a class="footer-orange first-footer-link" href="{%url 'profile'%}">View Profile</a>
+							<a href="{%url 'logout'%}">Logout</a>
+						{%else%}
+							<a class="footer-orange first-footer-link" href="{%url 'register'%}">Register</a>
+							<a href="{%url 'login'%}">Login</a>
+						{%endif%}
+
+					</div>
+				
+					<div id="contact-div">
+						<h5 align="left" class="footer-orange"> Contact </h5>
+						<ul class="contact-us">
+							<li id= "contact-combo">
+								<img class= "contact-svg" id ="contact-email-svg" src="{%static 'post/svg/email.svg'%}">
+								<a class="email-linkedin" target="_blank" href ="mailto:efrank272@gmail.com" id="contact-email">efrank272</a>
+							</li>
+							<li id= "contact-combo">
+								<img class= "contact-svg" id ="contact-linkedin-svg" src="{%static 'post/svg/linkedin.svg'%}">
+								<a class="email-linkedin" target="_blank" href="https://www.linkedin.com/in/frank-ezenwanne/" id="contact-linkedin">Frank Ezenwanne</a>
+							</li>
+							<li id= "contact-combo">
+								<img class= "contact-svg" id ="contact-phone-svg" src="{%static 'post/svg/whatsapp.svg'%}">
+								<a target ="_blank" href="https://api.whatsapp.com/send/?phone=2349035440199&text&app_absent=0%22" class="footer-orange" id="contact-phone">+2349035440199</a>
+							</li>	
+
+						</ul>
+					</div>
+
+			    </div>
+				<div class= "copyright">Copyright <span id="year"></span> <span style = "color:#FF4500"> Frank</span>  All rights reserved.</div>
+			
+		</div>
+
+		</footer>
+	</main>
+
+<script>
+
+	var linenav = document.getElementsByClassName("line-nav")[0]
+	if(linenav){
+	linenav.addEventListener("click",transbar)
+	linenav.addEventListener("mouseover",glowbar)
+	linenav.addEventListener("mouseout",glowbar2)
+	}
+	
+	function glowbar(){
+		let linescol = document.getElementsByClassName("line")
+		for(let i=0; i<3 ; i++){
+			linescol[i].classList.add("lines-white")
+		}
+	}
+
+	function glowbar2(){
+		let linescol = document.getElementsByClassName("line")
+		for(let i=0; i<3 ; i++){
+			linescol[i].classList.remove("lines-white")
+		}
+	}
+	function transbar(){
+		document.getElementsByClassName("side-bar")[0].classList.toggle("side-bar-active");
+		document.getElementsByClassName("line-nav")[0].classList.toggle("toggle")
+	}
+
+	document.getElementById("year").textContent = new Date().getFullYear()
+</script>			
+
+</body>
+</html>
+	
+	
