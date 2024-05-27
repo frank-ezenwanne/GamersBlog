@@ -58,9 +58,8 @@
 		{%endfor%}
 		{%if posts.has_other_pages%}
 		<div align = "center" class = "paginator-block">
-
-			{%if posts.number == 1%}
-				<a class ="selected-paginate" href = "?page=1">First</a>
+			{%if posts.number == 1%} <!-- posts.number is the current selected page number -->
+				<a class ="selected-paginate" href = "?page=1">First</a> 
 			{%else%}
 				<a class ="paginate" href = "?page=1">First</a>
 			{%endif%}

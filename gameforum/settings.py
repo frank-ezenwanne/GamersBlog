@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = (os.environ.get("DEBUG_VALUE") == "True")
+DEBUG = os.environ.get("DEBUG_VALUE",False)
 
 ALLOWED_HOSTS = ['gamersblog.herokuapp.com']
 
@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'compression_middleware.middleware.CompressionMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
@@ -148,9 +149,11 @@ AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
-AWS_URL = 'https://frankgamesite.s3.amazonaws.com/'
+#AWS_URL = 'https://frankgamesite.s3.amazonaws.com/'
+AWS_URL = os.environ.get("AWS_URL")
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_S3_SIGNATURE_VERSION = "s3v4"
 AWS_QUERYSTRING_AUTH = False
 django_heroku.settings(locals())
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+WHITENOISE_MAX_AGE = 300 if not DEBUG else 0

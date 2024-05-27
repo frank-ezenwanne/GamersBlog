@@ -20,7 +20,6 @@ class Post(models.Model):
 	postimage = ResizedImageField(size=[300,300],quality = 85, blank = True, null = True,upload_to = "post_images")
 	likes = models.ManyToManyField(User, related_name = "postlikefield")
 	
-
 	def __str__(self):
 		return self.title
 

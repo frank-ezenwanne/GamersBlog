@@ -1,7 +1,6 @@
 {%extends "post/index.html"%}
 {%load static%}
 {%block content%}
-	
 
 	{%if form.non_field_errors%}
 		{%for error in form.non_field_errors%}
@@ -62,7 +61,8 @@
 						<option id = 'GameBoyAdvance' value = "GameBoyAdvance"><div class= 'select-game-txt'>GameBoyAdvance</div></option>
 						<option id = 'GameBoy' value = "GameBoy"><div class= 'select-game-txt'>GameBoy</div></option>
 						<option id = 'Sega' value = "Sega"><div class= 'select-game-txt'>SEGA</div></option>
-						<option id = 'FamilyCube' value = "FamilyCube"><div class= 'select-game-txt'>Family Cube</div></option>
+						<option id = 'Mobile' value = "Mobile"><div class= 'select-game-txt'>Mobile</div></option>
+						<option id = 'Other' value = "Other"><div class= 'select-game-txt'>Other</div></option>
 					</select>
 					<span id ='select-reset'>clear</span>
 						{%for error in form.game_console.errors%}
