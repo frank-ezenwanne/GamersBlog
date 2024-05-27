@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,7 +25,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG_VALUE",False)
 
-ALLOWED_HOSTS = ['gamersblog.herokuapp.com']
+ALLOWED_HOSTS = ['gamersblog.up.railway.app']
 
 
 # Application definition
@@ -168,6 +167,5 @@ AWS_URL = os.environ.get("AWS_URL")
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 AWS_S3_SIGNATURE_VERSION = "s3v4"
 AWS_QUERYSTRING_AUTH = False
-django_heroku.settings(locals())
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 WHITENOISE_MAX_AGE = 300 if not DEBUG else 0
